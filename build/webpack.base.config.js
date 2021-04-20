@@ -23,6 +23,10 @@ module.exports = {
                 test: /\.tsx?$/i,
                 use: ['babel-loader','ts-loader'],
                 exclude: /node_modules/
+            },
+            {
+                test: /\.less/i,
+                use: ['style-loader','css-loader','less-loader'],
             }
         ]
     },
