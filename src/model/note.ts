@@ -1,16 +1,15 @@
 export default class Note {
-  /*
-    category: Array
-    content: String
-    createAt: Number
-    done: Boolean
-  */
-  constructor(category, content, createAt) {
+  constructor(category: string[], content: string, createAt: number) {
     this.category = category;
     this.content = content;
     this.createAt = createAt;
-    this.done = false;
   }
+  id?: number
+  done?: boolean
+  category: string[]
+  content: string
+  createAt: number
+  static createFromText: (input: string) => Note
 }
 
 Note.createFromText = function(input) {

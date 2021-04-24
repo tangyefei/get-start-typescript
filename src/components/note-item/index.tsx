@@ -1,16 +1,21 @@
 import React from 'react';
 
-import './index.css';
+import './index.less';
 
 import utils from '../../utils';
+import Note from '../../model/note';
 import NoteDao from '../../database/note';
 
-function delNote(note, handler) {
-  const id = note.id;
-  NoteDao.delete(id, handler(id))
+interface Props  {
+  data: Note,
+  handleNoteDeleted: (id: number) => void
 }
 
-function  generateContent(str) {
+function delNote(id: number, handler: (id: number) => void) {
+  NoteDao.delete(id, handler);
+}
+
+function  generateContent(str: string) {
   const reg = /(https?:\/\/(([a-zA-Z0-9]+-?)+[a-zA-Z0-9]+\.)+[a-zA-Z]+)(:\d+)?(\/[^\s]*)?(\?[^\s]*)?(#[^\s]*)?/g;
   const res = [];
   let match;
@@ -30,22 +35,26 @@ function  generateContent(str) {
   return res
 }
 
-function NoteItem(props) {
+function NoteItem(props: Props) {
+  // console.log('data', data)
+  const { data, handleNoteDeleted } = props;
+  console.log("data passed in", data);
     // TODO
     // 1. 为什么hover会导致日期都移动
     // 2. 解决删除后的震动问题
-    const { data:d, handleNoteDeleted } = props;
+    // , handleNoteDeleted
     return (
-      <div className="note-item" key={d.createAt}>
+      <div className="note-item" key={data.createAt}>
         <p className="desc-row">
-          <span className="create-date">创建于 {utils.formatDate(Number(d.createAt))}</span>
+          <span className="create-date">创建于 {utils.formatDate(Number(data.createAt))}</span>
           <span className="operation">
-            <span href="#" className="btn del" onClick={() => { delNote(d, handleNoteDeleted)} }>❌ </span>
+            <span href="#" className="btn del" onClick={() => { delNote(data.id, handleNoteDeleted)} }>❌ </span>
+            {/* , handleNoteDeleted */}
           </span>
         </p>
-        <p className={d.done ? 'content-row deleted' : 'content-row'}>
-          {d.category && d.category[0] === 'n/a' ? '' : <span className="tag">{d.category}</span>}
-          {generateContent(d.content)}
+        <p className={data.done ? 'content-row deleted' : 'content-row'}>
+          {data.category && data.category[0] === 'n/a' ? '' : <span className="tag">{data.category}</span>}
+          {generateContent(data.content)}
         </p>
       </div>
     );

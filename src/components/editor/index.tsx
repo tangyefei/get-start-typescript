@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 
-import './index.css';
+import './index.less';
 
 import Note from '../../model/note';
 import NoteDao from '../../database/note';
@@ -9,15 +9,16 @@ const CHAR_ENTER_KEYCODE = 13;
 
 function Editor() {
   const [input, setInput] = useState('');
-  const textRef = useRef();
+  const textRef = useRef<HTMLTextAreaElement>(null);
 
-  const handleInputChange = (e) =>  {
-    setInput( e.target.value);
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) =>  {
+    setInput(e.target.value );
   }
 
-  const handleNoteSave = (input) => {
+  const handleNoteSave = () => {
     const item = Note.createFromText(input);
-    NoteDao.add(item, (id) => {
+    NoteDao.add(item).then((res: any) => {
+      const id = (res as Note).id;
       Object.assign(item, { id });
       setInput('');
       window.mb.emit('noteAdded', item);
@@ -32,7 +33,7 @@ function Editor() {
       && e.keyCode === CHAR_ENTER_KEYCODE
       && input && input.trim()
     ) {
-      handleNoteSave(input);
+      handleNoteSave();
     }
   }, [input])
 
@@ -51,8 +52,6 @@ function Editor() {
         value={input}
         placeholder="请输入内容…"
         onChange={handleInputChange} />
-
-      {/* TODO 无内容 设置disable的样式 */}
       <div className="btn-row">
         {
           input && input.trim() ?

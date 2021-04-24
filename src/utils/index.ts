@@ -1,7 +1,7 @@
 import manba from 'manba';
 
 const Utils = {
-  formatDate(d) {
+  formatDate(d: number) {
     const today = manba();
     const date = manba(d);
     if (today.distance(date, manba.DAY) === 0) return `今天 ${manba(d).format('HH:mm')}`;
@@ -9,4 +9,5 @@ const Utils = {
     else return date.format('YYYYY-MM-DD HH:mm');
   },
 }
+
 export default Utils;
